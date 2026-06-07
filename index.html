@@ -355,5 +355,3 @@ const chk = document.getElementById("check-auto"), lbl = document.getElementById
 if (chk.checked) { lbl.innerText = "AUTO: ON"; lbl.style.color = "var(--success)"; dot.style.display = "block"; timerAuto = setInterval(ejecutarAnalisis, 10000); }
 else { lbl.innerText = "AUTO: OFF"; lbl.style.color = "#94a3b8"; dot.style.display = "none"; clearInterval(timerAuto); }
 }
-window.onload = () => { cargarFavoritos(); ejecutarAnalisis(); document.getElementById("check-auto").checked = true; toggleAuto(); };
-</script></body></html>
