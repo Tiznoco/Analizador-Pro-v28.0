@@ -1,3 +1,4 @@
+¡
 <!DOCTYPE html><html lang="es"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -294,7 +295,7 @@ document.getElementById("consejo").innerText = "MODO RADAR";
 document.getElementById("consejo").className = "advice-box bg-espera";
 document.getElementById("veredicto-acierto").innerText = "ESCANEANDO";
 }
-razon.innerText = "Buscando confirmación en " + vData.tf;
+razon.innerText = "Buscando confirmation en " + vData.tf;
 } else {
 document.getElementById("row-pnl").style.display = "table-row";
 document.getElementById("gestion-niveles").style.display = "grid";
@@ -312,6 +313,7 @@ document.getElementById("tp-val").innerText = (pos === "LARGO" ? ent * 1.04 : en
 
 async function escanearFavoritos() {
 const favs = JSON.parse(localStorage.getItem("m_favs")) || [];
+const pos = document.getElementById("trade-tipo").value;
 for (let s of favs) {
 if (s === simboloActual) continue;
 try {
@@ -319,10 +321,20 @@ let r = await fetch(`https://api.binance.com/api/v3/klines?symbol=${s}&interval=
 let d = await r.json(); let c = d.map(x => parseFloat(x[4]));
 let rsi = calcularRSI(c);
 let sig = rsi < 30 ? "buy" : rsi > 70 ? "sell" : "none";
-if (sig !== "none" && favSignals[s] !== sig) { sonar('operacion'); notify(`Alerta en ${s}`, `RSI extremo detectado`); }
+if (sig !== "none" && favSignals[s] !== sig) { 
+sonar('operacion'); 
+notify(`Alerta en ${s}`, `RSI extremo detectado`); 
+}
 favSignals[s] = sig;
 const el = document.querySelector(`[data-symbol="${s}"]`);
 if (el) el.className = "fav-item " + (sig === 'buy' ? 'signal-buy' : sig === 'sell' ? 'signal-sell' : '');
+
+if (pos === "NINGUNA" && sig !== "none") {
+const consejoEl = document.getElementById("consejo");
+consejoEl.innerText = `ALERTA: ${s} (${sig === 'buy' ? '¡LARGO!' : '¡CORTO!'})`;
+consejoEl.className = "advice-box " + (sig === 'buy' ? "bg-largo" : "bg-corto");
+document.getElementById("veredicto-acierto").innerText = "REVISA ESTE FAVORITO";
+}
 } catch (e) {}
 }
 }
